@@ -1,24 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container w-screen">
+    <Header />
+    <router-view/>
+  </div>
 </template>
 
 <script>
-const electron = window.require("electron")
-import HelloWorld from './components/HelloWorld.vue'
+import * as Twitter from './plugins/twitter-request'
+
+// @ is an alias to /src
+import Header from '@/components/Header.vue'
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
+    Header
   },
   mounted: function(){
-    electron.ipcRenderer.on('goToHome', ()=>{
-      this.$router.push('/');
-    });
-    electron.ipcRenderer.on('goToAbout', ()=>{
-      this.$router.push('/about');
-    });
+    window.twitterAuth.received((e, data) => {
+      Twitter.FinishVerification(new URL(data))
+    })
   }
 }
 </script>
@@ -30,6 +30,18 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>
